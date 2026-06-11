@@ -3,7 +3,7 @@ Introduction to SWATtunR
 
 # SWATtunR
 
-[![](https://img.shields.io/badge/devel%20version-0.3.12-blue.svg)](https://github.com/biopsichas/SWATtunR)
+[![](https://img.shields.io/badge/devel%20version-0.3.13-blue.svg)](https://github.com/biopsichas/SWATtunR)
 [![](https://img.shields.io/github/last-commit/biopsichas/SWATtunR.svg)](https://github.com/biopsichas/SWATtunR/commits/green)
 [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Project Status: Active - The project has reached a stable, usable
@@ -12,6 +12,7 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![](https://img.shields.io/github/languages/code-size/biopsichas/SWATtunR.svg)](https://github.com/biopsichas/SWATtunR)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://cran.r-project.org/web/licenses/MIT)
+[![](https://img.shields.io/badge/doi-https://doi.org/10.1016/j.envsoft.2026.107014-yellow.svg)](https://doi.org/https://doi.org/10.1016/j.envsoft.2026.107014)
 
 The goal of `SWATtunR` is to help with the [SWAT+
 model](https://swat.tamu.edu/software/plus/) calibration and validation.

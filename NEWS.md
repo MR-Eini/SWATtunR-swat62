@@ -1,3 +1,7 @@
+# SWATtunR 0.3.13
+* Updated `calc_gof()` function to include additional option to average for a selected period.
+* Included the link to the **SWATtunR** article in the website. 
+
 # SWATtunR 0.3.12
 
 * Updated `plot_esco_epco()` to include additional option for plotting - full parameter range plotting.

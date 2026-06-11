@@ -581,11 +581,16 @@ paste_runs <- function(strt, end, sep) {
 #' the function names themselves will be used as column names. Commonly used
 #' functions (such as `NSE`, `pbias`, `KGE`, etc.) are available in the
 #' documentation of the *hydroGOF* package.
-#'
+#' @param period Optional. A character string specifying the time period for
+#'   aggregating data before calculating GoF. One of `"second"`, `"minute"`,
+#'   `"hour"`, `"day"`, `"week"`, `"month"`, `"bimonth"`, `"quarter"`,
+#'   `"season"`, `"halfyear"`, `"year"`, or `NULL` (default, no aggregation).
+#'   Aggregation is done using the mean. Period names match the unit strings
+#'   accepted by [lubridate::floor_date()].
 #' @returns A table with the calculated goodness-of-fit values.
 #'
-#' @importFrom dplyr bind_cols filter inner_join mutate select %>%
-#' @importFrom lubridate is.Date
+#' @importFrom dplyr bind_cols filter inner_join mutate select across all_of where %>%
+#' @importFrom lubridate is.Date floor_date
 #' @importFrom purrr map_lgl
 #' @importFrom tidyselect any_of
 #'
@@ -609,7 +614,7 @@ paste_runs <- function(strt, end, sep) {
 #' @keywords calculate
 #' @seealso For available goodness-of-fit functions, see the [hydroGOF package documentation](https://cran.r-project.org/web/packages/hydroGOF/hydroGOF.pdf).
 
-calc_gof <- function(sim, obs, funs) {
+calc_gof <- function(sim, obs, funs, period = NULL) {
   fun_names <- as.character(substitute(funs))[-1]
   list_names <- names(funs)
   fun_names[nchar(list_names) > 0] <- list_names[nchar(list_names) > 0]
@@ -647,10 +652,10 @@ calc_gof <- function(sim, obs, funs) {
 
   # Check date columns for duplicate entries.
   if(anyDuplicated(sim[, join_var])) {
-    stop("Duplicated date entries were found in 'load'.")
+    stop("Duplicated date entries were found in simulated data.")
   }
-  if(anyDuplicated(sim[, join_var])) {
-    stop("Duplicated date entries were found in 'flow'.")
+  if(anyDuplicated(obs[, join_var])) {
+    stop("Duplicated date entries were found in  observation data.")
   }
 
   # Generate a vector with dates which are available in load and flow
@@ -658,9 +663,41 @@ calc_gof <- function(sim, obs, funs) {
 
   # Filter only dates where data in load and flow are available
   sim <- filter(sim, date %in% dates_avail$date)
-  sim <- select(sim, - any_of(join_var))
   obs <- filter(obs, date %in% dates_avail$date)
-  obs <- select(obs, - any_of(join_var))
+
+  ## Period string check
+  if (!is.null(period)) {
+    valid_periods <- c(
+      "second", "minute", "hour",
+      "day", "week", "month",
+      "bimonth", "quarter", "season",
+      "halfyear", "year"
+    )
+    if (!is.character(period) || length(period) != 1) {
+      stop("'period' must be a single character string.")
+    }
+    if (!period %in% valid_periods) {
+      stop(paste0(
+        "'period' must be one of: ",
+        paste(valid_periods, collapse = ", "),
+        ", or NULL."
+      ))
+    }
+
+    group_vars <- c(setdiff(join_var, 'date'), 'date')
+    sim <- sim %>%
+      mutate(date = floor_date(date, period)) %>%
+      group_by(across(all_of(group_vars))) %>%
+      summarise(across(where(is.numeric), mean, na.rm = TRUE), .groups = 'drop')
+
+    obs <- obs %>%
+      mutate(date = floor_date(date, period)) %>%
+      group_by(across(all_of(group_vars))) %>%
+      summarise(across(where(is.numeric), mean, na.rm = TRUE), .groups = 'drop')
+  }
+
+  sim <- select(sim, -any_of(join_var))
+  obs <- select(obs, -any_of(join_var))
 
   gofs <- map(funs, ~ calc_gof_i(sim, obs, .x)) %>%
     bind_cols(., .name_repair = ~ fun_names) %>%

@@ -4,7 +4,7 @@
 \alias{calc_gof}
 \title{Calculate a goodness-of-fit table}
 \usage{
-calc_gof(sim, obs, funs)
+calc_gof(sim, obs, funs, period = NULL)
 }
 \arguments{
 \item{sim}{Data frame with one date column and one or many columns with
@@ -18,6 +18,13 @@ the names will be used as column names in the returned results. If unnamed,
 the function names themselves will be used as column names. Commonly used
 functions (such as \code{NSE}, \code{pbias}, \code{KGE}, etc.) are available in the
 documentation of the \emph{hydroGOF} package.}
+
+\item{period}{Optional. A character string specifying the time period for
+aggregating data before calculating GoF. One of \code{"second"}, \code{"minute"},
+\code{"hour"}, \code{"day"}, \code{"week"}, \code{"month"}, \code{"bimonth"}, \code{"quarter"},
+\code{"season"}, \code{"halfyear"}, \code{"year"}, or \code{NULL} (default, no aggregation).
+Aggregation is done using the mean. Period names match the unit strings
+accepted by \code{\link[lubridate:round_date]{lubridate::floor_date()}}.}
 }
 \value{
 A table with the calculated goodness-of-fit values.

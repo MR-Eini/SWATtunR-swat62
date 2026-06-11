@@ -28,6 +28,7 @@ library(badger)
 `r badge_repostatus("active")`
 `r badge_code_size("biopsichas/SWATtunR")`
 `r badge_license("MIT")`
+`r badge_doi("https://doi.org/10.1016/j.envsoft.2026.107014", "yellow")`
 
 The goal of `SWATtunR` is to help with the [SWAT+ model](https://swat.tamu.edu/software/plus/) calibration and validation. These functions were developed and tested for the implementation of modeling tasks in the [OPTAIN project](https://www.optain.eu/), [Nordbalt-Ecosafe](https://projects.au.dk/nordbalt-ecosafe) and [LIFE SIP Vanduo](https://webgate.ec.europa.eu/life/publicWebsite/project/LIFE22-IPE-LT-LIFE-SIP-Vanduo-101104645/integrated-water-management-in-lithuania). Functions are initially developed by [Christoph Schuerz](https://www.ufz.de/index.php?en=49467), which added important capability on top of other R tools designed for the SWAT/SWAT+ models. Therefore, we highly recommend trying and using these tools:
 

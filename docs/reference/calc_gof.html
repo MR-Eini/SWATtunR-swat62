@@ -11,7 +11,7 @@ with funs."><meta property="og:image" content="https://biopsichas.github.io/SWAT
 
     <a class="navbar-brand me-2" href="../index.html">SWATtunR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ with <code>funs</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_gof</span><span class="op">(</span><span class="va">sim</span>, <span class="va">obs</span>, <span class="va">funs</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_gof</span><span class="op">(</span><span class="va">sim</span>, <span class="va">obs</span>, <span class="va">funs</span>, period <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -86,6 +86,15 @@ the names will be used as column names in the returned results. If unnamed,
 the function names themselves will be used as column names. Commonly used
 functions (such as <code>NSE</code>, <code>pbias</code>, <code>KGE</code>, etc.) are available in the
 documentation of the <em>hydroGOF</em> package.</p></dd>
+
+
+<dt id="arg-period">period<a class="anchor" aria-label="anchor" href="#arg-period"></a></dt>
+<dd><p>Optional. A character string specifying the time period for
+aggregating data before calculating GoF. One of <code>"second"</code>, <code>"minute"</code>,
+<code>"hour"</code>, <code>"day"</code>, <code>"week"</code>, <code>"month"</code>, <code>"bimonth"</code>, <code>"quarter"</code>,
+<code>"season"</code>, <code>"halfyear"</code>, <code>"year"</code>, or <code>NULL</code> (default, no aggregation).
+Aggregation is done using the mean. Period names match the unit strings
+accepted by <code><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">lubridate::floor_date()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

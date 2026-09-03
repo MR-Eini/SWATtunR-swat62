@@ -330,6 +330,16 @@ plot_phu_yld_bms <- function(sim_result, yield_obs = NULL, bar_width = 0.5) {
     yield_obs <- tibble(plant_name = character())
   }
 
+  plotted_crops <- unique(sim_result$simulation$phu$plant_name[
+    sim_result$simulation$phu$year %in% sim_years])
+  missing_crops <- setdiff(yield_obs$plant_name, plotted_crops)
+  if (length(missing_crops)) {
+    warning("No simulated harvest records in the plotted period for: ",
+            paste(missing_crops, collapse = ", "), call. = FALSE)
+  }
+  # Observation-only crops would otherwise add unlabelled facets to just the
+  # yield row and misalign it with the PHU and biomass crop headings.
+  par_name <- par_name[par_name$name %in% plotted_crops, , drop = FALSE]
   yield_obs <- left_join(par_name, yield_obs,
                          by = join_by(name == plant_name)) %>%
     rename(plant_name = name)

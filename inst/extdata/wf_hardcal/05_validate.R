@@ -37,12 +37,13 @@ save_file_name <- paste0(format(Sys.time(), '%Y%m%d%H%M'), '_sim_val')
 save_path <- './simulation'
 
 ## The main step in valitadion is to run only selected parameter sets
-parameter_set_valid <- parameter_set[run_ids, ]
+parameter_set_valid <- parameter_set[run_ids, , drop = FALSE]
 
 # Perform simulation runs
 run_swatplus(project_path     = model_path,
              output           = outputs,
-             parameter        = parameter_set_valid,
+             parameter        = parameter_set,
+             run_index        = run_ids,
              start_date       = start_date,
              end_date         = end_date,
              start_date_print = start_date_print,
@@ -58,8 +59,7 @@ run_swatplus(project_path     = model_path,
 # Paths to simulation and observation data
 # E.g. load the simulations with the last time stamp, if default
 # save_file names in simulation runs is used.
-sims <- list.files('./simulation/', pattern = '[0-9]{12}_sim_val')
-sim_path <- paste0('./simulation/', sims[length(sims)])
+sim_path <- file.path(save_path, save_file_name)
 
 # Load and prepare simulation results -------------------------------------
 sim <- load_swat_run(sim_path)
@@ -82,24 +82,24 @@ flow_fdc_obs <- calc_fdc(flow_obs)
 
 # Calculate goodness-of-fit values ----------------------------------------
 # E.g. to calculate typical indices such as NSE, KGE, pbias, etc. for discharge
-gof_flow <- calc_gof(sim = flow_sim, obs = flow_obs,
+gof_flow_val <- calc_gof(sim = flow_sim, obs = flow_obs,
                      funs = list(nse_q = NSE, kge_q = KGE, pb_q = pbias,
                                  mae_q = mae))
 
 # Calculate RSR for different discharge FDC sections (as proposed in
 # Pfannerstill et al., 2014 (https://doi.org/10.1016/j.jhydrol.2013.12.044))
-gof_fdc <- calc_fdc_rsr(fdc_sim = flow_fdc_sim, fdc_obs = flow_fdc_obs,
+gof_fdc_val <- calc_fdc_rsr(fdc_sim = flow_fdc_sim, fdc_obs = flow_fdc_obs,
                         quantile_splits = c(5, 20, 70, 95))
 
 # E.g. if all calculated GOF tables should be joined to one table
-gof_all <- list(gof_flow, gof_fdc) %>%
+gof_all_val <- list(gof_flow_val, gof_fdc_val) %>%
   reduce(., left_join, by = 'run')
 
 # Select the GOF values of interest
-gof_sel <- select(gof_all, run, nse_q, pb_q, p_0_5, p_20_70, p_70_95)
+gof_sel_val <- select(gof_all_val, run, nse_q, pb_q, p_0_5, p_20_70, p_70_95)
 
 # Print the mean GOF values for all runs
-gof_sel[names(gof_sel)[names(gof_sel) != "run"]] %>% summarise_all(mean)
+gof_sel_val[names(gof_sel_val)[names(gof_sel_val) != "run"]] %>% summarise_all(mean)
 
 # For plotting options or extension to different variables, etc., see the the
 # 04_analyze_results.R script.

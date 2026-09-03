@@ -1,7 +1,7 @@
 Package: SWATtunR
 Type: Package
 Title: Soft Calibration, Hard Calibration, and Validation for SWAT+ Models
-Version: 0.3.13
+Version: 0.3.14
 Date: 2026-06-11
 Authors@R: c(
     person("Svajunas", "Plunge", , "svajunas.plunge@gmail.com", role = c("aut", "cre"),
@@ -15,8 +15,8 @@ Authors@R: c(
 Maintainer: Svajunas Plunge <svajunas.plunge@gmail.com>
 Description: Comprehensive set of tools for soft and hard model calibration, validation steps, calculating performance metrics, plotting model output for user decision-making, and updating parameters in the model files.
 License: MIT + file LICENSE
-URL: https://biopsichas.github.io/SWATtunR, https://github.com/biopsichas/SWATtunR
-BugReports: https://github.com/biopsichas/SWATtunR/issues
+URL: https://github.com/MR-Eini/SWATtunR-swat62
+BugReports: https://github.com/MR-Eini/SWATtunR-swat62/issues
 Depends:
     R (>= 4.2.0)
 Imports:
@@ -33,7 +33,7 @@ Imports:
     tidyselect,
     purrr,
     patchwork,
-    readr, 
+    readr,
     rstudioapi,
     scales,
     stats,

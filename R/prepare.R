@@ -619,8 +619,8 @@ calc_gof <- function(sim, obs, funs, period = NULL) {
   list_names <- names(funs)
   fun_names[nchar(list_names) > 0] <- list_names[nchar(list_names) > 0]
 
-  if(ncol(obs) != 2) {
-    stop("'obs' must consist of one date and one variable column.")
+  if(ncol(obs) != 2L + as.integer('unit' %in% names(obs))) {
+    stop("'obs' must contain one date, one variable, and optionally one unit column.")
   }
 
   # Get the names of the date columns
@@ -662,8 +662,9 @@ calc_gof <- function(sim, obs, funs, period = NULL) {
   dates_avail <- inner_join(sim[join_var], obs[join_var], by = join_var)
 
   # Filter only dates where data in load and flow are available
-  sim <- filter(sim, date %in% dates_avail$date)
-  obs <- filter(obs, date %in% dates_avail$date)
+  if (nrow(dates_avail) == 0L) stop("No matching dates in simulated and observed data.")
+  sim <- inner_join(dates_avail, sim, by = join_var)
+  obs <- inner_join(dates_avail, obs, by = join_var)
 
   ## Period string check
   if (!is.null(period)) {

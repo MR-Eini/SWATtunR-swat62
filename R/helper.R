@@ -177,7 +177,7 @@ filter_period <- function(tbl, time_window) {
   if(length(time_window) != 2) {
     stop("'time_window' must be of length 2 providing a start and an end date.")
   }
-  if(nchar(time_window[1]) != nchar(time_window[1])) {
+  if(nchar(time_window[1]) != nchar(time_window[2])) {
     stop("The formats of start and end date of 'time_window' differ.")
   }
   if(nchar(time_window[1]) == 4) {
@@ -186,6 +186,7 @@ filter_period <- function(tbl, time_window) {
   }
 
   time_window <- as.Date(time_window)
+  if (anyNA(time_window)) stop("Invalid dates in time_window.")
 
   if (time_window[1] > time_window[2]) {
     stop("The first value of 'time_window' is greater than the second value.")

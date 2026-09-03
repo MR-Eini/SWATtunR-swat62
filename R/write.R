@@ -45,6 +45,10 @@
 #' @keywords write
 #'
 write_cal_file <- function(par, model_path, write_path = NULL, i_run = 1){
+  if (!is.data.frame(par) || nrow(par) == 0L) stop("par must be a nonempty data frame.")
+  if (!is.numeric(i_run) || !length(i_run) || anyNA(i_run) ||
+      any(!is.finite(i_run) | i_run != trunc(i_run) | i_run < 1 | i_run > nrow(par)) ||
+      anyDuplicated(i_run)) stop("i_run must contain unique row indices within par.")
   # Set default write path
   if (is.null(write_path)) {
     write_path <- model_path
@@ -54,8 +58,14 @@ write_cal_file <- function(par, model_path, write_path = NULL, i_run = 1){
   par_t <- format_swatplus_parameter(par)
   unit_conds <- read_unit_conditions(model_path, par_t)
 
-  cal <- map(seq_len(nrow(par_t$definition)),
-             ~ par_t$definition[.x, ]) %>%
+  is_plant <- par_t$definition$file_name == "pdb"
+  if (any(is_plant)) {
+    par_t$plants_plt <- readr::read_table(file.path(model_path, "plants.plt"),
+      skip = 1, show_col_types = FALSE)
+  }
+  cal_def <- par_t$definition[!is_plant, , drop = FALSE]
+  cal <- map(seq_len(nrow(cal_def)),
+             ~ cal_def[.x, ]) %>%
     map(~ setup_calibration_cal(.x, unit_conds)) %>%
     bind_rows()
   # Write the calibration file.
@@ -72,6 +82,6 @@ write_cal_file <- function(par, model_path, write_path = NULL, i_run = 1){
     target_path <- ensure_dir(write_path)
     write_calibration(target_path, par_t, cal,
                       seq(1, dim(par)[1], 1), i_run)
-    message(paste0("calibration.cal file written to: ", write_path))
+    message(paste0("Parameter files written to: ", write_path))
   }
 }
